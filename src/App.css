@@ -1,0 +1,177 @@
+.container{
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  
+  margin: 0;
+  gap: 15px;
+}
+
+.nota{
+  display: relative;
+  width: 70vw;
+  max-width: 400px;
+  padding: 7px;
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+}
+
+.delete-icon:hover {
+  color: #3F3BE1;
+  transition: 0.3s;
+}
+
+.creadora{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.items-create{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+  width: 70vw;
+  max-width: 400px;
+  border-radius: 10px;
+  background-color: white;
+  color: black;
+}
+
+@media( width < 500px ){
+  .items-create{
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+}
+
+.add-icon{
+  display: absolute;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+}
+
+.add-icon:hover {
+  color: #3F3BE1;
+  transform: rotate(90deg);
+  transition: 0.3s;
+}
+
+.icons{
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.items{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.descripcion{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding-top: 15px;
+}
+
+.descripcion input{
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+}
+
+form{
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 70vw;
+  max-width: 400px;
+}
+
+.list-items .items {
+  background: #44446b;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgb(186, 186, 186);
+}
+
+.nota article{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+  width: 100%;
+}
+
+/* to do list style */
+.toDoList {
+  margin-top: 2rem;
+}
+.toDoList span {
+  color: rgb(161, 160, 160);
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.toDoList .list-items {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input[type='checkbox'] {
+  padding: 5px;
+  cursor: pointer;
+}
+.items-text {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.items-text div {
+  color: red;
+  overflow: hidden;
+}
+.notify {
+  text-align: center;
+  color: rgb(161, 160, 160);
+}
+
+.isChecked {
+  text-decoration: line-through;
+  color: #3F3BE1;
+  opacity: 0.5;
+}
+
+.stats {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background: #282851;
+}
