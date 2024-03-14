@@ -1,51 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css'
 import TaskItem from './components/TaskItem';
 import { FormCreate } from './components/notaCreadora';
 import { EditNotas } from './components/EditNotas';
-
-let notas = [
-  {
-  'id':1,
-  'hora':'7:15',
-  'actividad':'Me levante',
-  'info':'La hora de levantarme es de 7:15'},
-  {
-  'id':2,
-  'hora':'7:25',
-  'actividad':'Tome las gotas',
-  'info':'Tome las gotas de la mañana',},
-  {
-  'id':3,
-  'hora':'8:00',
-  'actividad':'Empece a trabajar',
-  'info':'Empece a trabajar en el proyecto del dia',},
-  {
-  'id':4,
-  'hora':'12:15',
-  'actividad':'Descanso',
-  'info':'Momento para ir a almorzar',}
-]
+import { MdHelpOutline } from "react-icons/md";
 
 function App() {
 const [notas, setNotas] = useState([])
-//formState: { errors }, watch, setValue,
+const [contNotas, setContNotas] = useState(0)
+const [explicacion, setExplicacion] = useState(false)
+
+useEffect (() => {
+    if (!notas) return
+    const notasAux = [...notas]
+    notasAux.sort((a, b) => a.hora.localeCompare(b.hora))
+    setNotas(notasAux)
+
+}, [contNotas])
 
 function addNota ([hora, actividad, descripcion]) {
-  const newTask = {id: (notas.length+1), hora, actividad, descripcion, isEditing: false, info: false, checked: false}
+  
+  const diaActual = new Date()
+  let horaActual = diaActual.getHours()
+  let minActual = diaActual.getMinutes()
+
+  if(horaActual < 10){
+    horaActual = '0'+diaActual.getHours()
+  }
+  if(minActual < 10){
+    minActual = '0'+diaActual.getMinutes()
+  }
+
+  let relojActual = horaActual+':'+minActual
+  console.log(relojActual)
+  
+  let programmedAux = false
+  if(hora>relojActual){
+    programmedAux = true
+  }
+
+  const newTask = {id: (notas.length+1), hora, actividad, descripcion, isEditing: false, info: false, checked: false, programmed: programmedAux}
+  //console.log(newTask)
   setNotas([...notas, newTask])
-  console.log(notas)
+  setContNotas(contNotas+1)
 }
 
 function deleteNota(deleteId){
   setNotas(notas.filter(nota=> nota.id !== deleteId))
 }
 
-function toggleInfo (idAux, checked) {
+function deleteAll(){
+  setNotas([])
+}
+
+function toggleCheck (idAux, checkedAux) {
   setNotas((prevToDoList)=>
       prevToDoList.map(nota => nota.id===idAux ? {
           ...nota,
-          info: checked
+          checked: checkedAux
       }: nota),
   )
 }
@@ -74,24 +86,52 @@ function editNota ([id, hora, actividad, descripcion]) {
 
   return (
     <>
-    <h1>Registro</h1>
-    <section className='container'>
-        
-                    
-          {notas.map((nota) => (
-              nota.isEditing ? (
-                <EditNotas nota={nota} editNota={editNota} editNotaCheck={editNotaCheck} />
-              ) : (
-              <TaskItem nota={nota} deleteNota={deleteNota} toggleInfo={toggleInfo} editNotaCheck={editNotaCheck}/>
-            )))}
+    <main>
+      <h1>Registro</h1>
+      <section className='container'>
           
-          {notas.length === 0 ? (<p className="notify">No tasks to do</p>) : null}
-        
-        {/*<Stats toDoList={notas}/>*/}
-        <div className='nota creadora'>
-          <FormCreate addNota={addNota}/>
+                      
+            {notas.map((nota) => (
+                nota.isEditing ? (
+                  <EditNotas nota={nota} editNota={editNota} editNotaCheck={editNotaCheck} />
+                ) : (
+                <TaskItem nota={nota} deleteNota={deleteNota} toggleCheck={toggleCheck} editNotaCheck={editNotaCheck}/>
+              )))}
+            
+            {notas.length === 0 ? (<p className="notify">No tasks to do</p>) : null}
+          
+          {/*<Stats toDoList={notas}/>*/}
+          <div className='nota creadora'>
+            <FormCreate addNota={addNota}/>
+          </div>
+          <button className='deleteAll' onClick={() => {deleteAll()}}>Reset</button>
+      </section>
+    </main>
+    <a href="#modal-container" className="modal-trigger"><MdHelpOutline className='help-icon'/></a>
+
+    <div className="modal-container" id="modal-container">
+        <div className="modal">
+            <a href="#" className="close">&times;</a>
+            <div className="modal-header">
+                <h1>Funcionalidades</h1>
+            </div>
+            <div className="modal-body">
+                <p>
+                  El notero tiene las sigientes functiones: <br/>
+                  <br/>
+                  - Crear notas <br/> /(todas las notas se ordenan de menor a mayor)/ <br/><br/>
+                  - Eliminar notas <br/><br/>
+                  - Editar notas <br/><br/>
+                  - Eliminar todas las notas <br/> /(reset)/ <br/><br/>
+                  - Marcar como completadas <br/> /(tachando el titulo)/ <br/><br/>
+                  - Programar tareas a futuro <br/> /(creandolas con una hora mayor a la actual)/ <br/><br/>
+                </p>
+            </div>
+            <div className="modal-footer">
+                <p>Gracias por haber leido</p>
+            </div>
         </div>
-    </section>
+    </div>
     </>
   )
 }

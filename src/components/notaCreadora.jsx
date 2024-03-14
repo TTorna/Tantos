@@ -48,13 +48,13 @@ export function FormCreate({ addNota }) {
   }
 
   const {
-    register,
-    handleSubmit, reset
+    handleSubmit
   } = useForm()
   
   const onSubmit = handleSubmit(() => {
     if(hora.trim() === '' || actividad.trim() === '') return
-    addNota([hora, actividad, descripcion])
+    addNota([hora, actividad, descripcion])    
+
     setActividad('')
     setHora('')
     setDescripcion('')

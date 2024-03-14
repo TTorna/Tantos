@@ -2,19 +2,25 @@ import {MdClose, MdEdit} from 'react-icons/md'
 import {useState} from 'react'
 import PropTypes from 'prop-types';
 
-const TaskItem = ({ nota, deleteNota, editNotaCheck }) => {
+const TaskItem = ({ nota, deleteNota, editNotaCheck, toggleCheck }) => {
     const [showInfo, setShowInfo] = useState(nota.info)
+    const [check, setCheck] = useState(false)
     
+    function checkAll () {
+        toggleCheck(nota.id, check),
+        setCheck(!check)
+    }
+
     return (
         <>
-        <div className="nota">
+        <div className={ nota.programmed ? (check ? 'nota programmed check' : 'nota programmed') : "nota"}>
             <div className='items'>
                 <span>{nota.hora}</span>
-                <span>{nota.actividad}</span>
+                <span className={check ? 'actOn' : 'actOff'} onClick={() => {checkAll()}}>{nota.actividad}</span>
                 <a href='#' onClick={() => {setShowInfo(!showInfo)}}>info.</a>
                 <div className='icons'>
-                    <MdClose className='delete-icon' onClick={()=>deleteNota(nota.id)}/>
-                    <MdEdit className='delete-icon' onClick={()=>{editNotaCheck(nota.id, showInfo)}}/>
+                    <MdClose className='icon' onClick={()=>deleteNota(nota.id)}/>
+                    <MdEdit className='icon' onClick={()=>{editNotaCheck(nota.id, showInfo)}}/>
                 </div>
             </div>            
             {showInfo &&
@@ -32,10 +38,12 @@ TaskItem.propTypes = {
         hora: PropTypes.string.isRequired,
         actividad: PropTypes.string.isRequired,
         descripcion: PropTypes.string.isRequired,
-        info: PropTypes.bool.isRequired
+        info: PropTypes.bool.isRequired,
+        programmed: PropTypes.bool.isRequired
     }).isRequired,
     deleteNota: PropTypes.func.isRequired,
-    editNotaCheck: PropTypes.func.isRequired
+    editNotaCheck: PropTypes.func.isRequired,
+    toggleCheck: PropTypes.func.isRequired
 };
 
 export default TaskItem
