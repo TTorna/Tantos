@@ -239,7 +239,7 @@ input[type='checkbox'] {
   border-radius: 10px;
   transform: translate(-50%, -50%);
   text-align: center;
-  min-width: 50%;
+  width: 50%;
   transition: all .3s .3s;
   box-shadow: 0 35px 35px rgba(0, 0, 0, .3);
 }
