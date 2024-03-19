@@ -8,7 +8,6 @@ import { MdHelpOutline } from "react-icons/md";
 function App() {
 const [notas, setNotas] = useState([])
 const [contNotas, setContNotas] = useState(0)
-const [explicacion, setExplicacion] = useState(false)
 
 useEffect (() => {
     if (!notas) return
@@ -116,16 +115,49 @@ function editNota ([id, hora, actividad, descripcion]) {
                 <h1>Funcionalidades</h1>
             </div>
             <div className="modal-body">
-                <p>
-                  El notero tiene las sigientes functiones: <br/>
-                  <br/>
-                  - Crear notas <br/> /(todas las notas se ordenan de menor a mayor)/ <br/><br/>
-                  - Eliminar notas <br/><br/>
-                  - Editar notas <br/><br/>
-                  - Eliminar todas las notas <br/> /(reset)/ <br/><br/>
-                  - Marcar como completadas <br/> /(tachando el titulo)/ <br/><br/>
-                  - Programar tareas a futuro <br/> /(creandolas con una hora mayor a la actual)/ <br/><br/>
-                </p>
+                  <h3>El notero tiene las sigientes functiones:</h3>
+                  <details>
+                    <summary>Crear notas </summary>
+                    <p><img src="CreateNota.jpg" alt="Imagen de la creacion de notas "/><br/>
+                    Al apretar el boton (+) se creara una nota con la informacion dada.<br/><br/>
+                    /(todas las notas se ordenan de menor a mayor)/<br/>
+                    /(al apretar "info." se muestra la informacion)/ </p>
+                  </details>
+                  <br />
+                  <details>
+                    <summary>Eliminar notas</summary>
+                    <p><img src="EliminarNota.jpg" alt="Imagen de la eliminacion de notas "/><br/>
+                    Al apretar el boton (X) se eliminara la nota.</p>
+                  </details><br/>
+                  <details>
+                    <summary>Editar notas</summary>
+                    <p><img src="EditarNota.jpg" alt="Imagen de la edicion de notas "/><br/>
+                    Al apretar el boton (lapiz) se podra editar la nota<br/><br/>
+                    Aparecera de la sigiente manera para cambiar los campos:<br/>
+                    <img src="EditarNota2.jpg" alt="Imagen de la edicion de notas "/>
+                    </p>
+                  </details><br/>
+                  <details>
+                    <summary>Eliminar todas las notas</summary>
+                    <p><img src="BotonReset.jpg" alt="Imagen del boton reset"/><br/>
+                    Al apretar el boton reset se eliminaran todas las notas.</p>
+                  </details><br/>
+                  <details>
+                    <summary>Marcar como completadas</summary>
+                    <p><img src="NotaCompletada.jpg" alt="Imagen de la nota completada"/><br />
+                    Al apretar el titulo de la nota se marcara como completada tachandolo.</p>
+                  </details><br/>
+                  <details>
+                    <summary>Programar tareas a futuro</summary>
+                    <p>Se pueden crear tareas programadas creandolas con una hora mayor a la actual.<br />
+                    Por Ejemplo, si son las 20:15, y creo esta nota:<br />
+                    <img src="NotaProgramada.jpg" alt="Imagen de la creacion de una nota programada "/><br /><br />
+                    Se creara la nota programada a las 21:00, que se distinguirá de las otras notas por su borde.<br />
+                    <img src="NotaProgramadaRoja.jpg" alt="Imagen de una nota programada por hacer"/><br /><br />
+                    Y al "Marcar como completada" la nota cambiara de color el borde para asi identificar si la "tarea programada" se hizo o no.<br />
+                    <img src="NotaProgramadaVerde.jpg" alt="Imagen de la creacion de una nota programada hecha"/><br />
+                    </p>
+                  </details><br/>
             </div>
             <div className="modal-footer">
                 <p>Gracias por haber leido</p>
