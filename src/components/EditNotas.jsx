@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import {MdAddCircle} from 'react-icons/md'
 import PropTypes from 'prop-types';
 
-export function EditNotas({ nota, editNota, editNotaCheck }) {
+export function EditNotas({ nota, editNota }) {
   const [hora, setHora] = useState(nota.hora);
   const [actividad, setActividad] = useState(nota.actividad);
   const [info, setInfo] = useState(nota.info);
@@ -27,9 +27,12 @@ export function EditNotas({ nota, editNota, editNotaCheck }) {
   } = useForm()
   
   const onSubmit = handleSubmit(() => {
-    if(hora.trim() === '' || actividad.trim() === '') return
-    editNota([nota.id, hora, actividad, descripcion])
-    editNotaCheck(nota.id, info)
+    if(actividad.trim() === '') return
+    if(hora.trim() === '') {
+      editNota([nota.id, " ##:## ", actividad, descripcion, info])}
+    else {
+      editNota([nota.id, hora, actividad, descripcion, info])
+    }
   })
 
 return(
@@ -59,6 +62,5 @@ EditNotas.propTypes = {
     descripcion: PropTypes.string.isRequired,
     info: PropTypes.bool.isRequired
     }).isRequired,
-    editNotaCheck: PropTypes.func.isRequired,
     editNota: PropTypes.func.isRequired
 };

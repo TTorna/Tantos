@@ -52,8 +52,12 @@ export function FormCreate({ addNota }) {
   } = useForm()
   
   const onSubmit = handleSubmit(() => {
-    if(hora.trim() === '' || actividad.trim() === '') return
-    addNota([hora, actividad, descripcion])    
+    if(actividad.trim() === '') return
+    
+    if(hora.trim() === '') {
+      addNota([" ##:## ", actividad, descripcion])}
+    else {
+      addNota([hora, actividad, descripcion])}
 
     setActividad('')
     setHora('')
@@ -64,7 +68,7 @@ return(
         <form onSubmit={onSubmit}>
           <div className='items-create'>
             <input type="time" value={hora} name="hora" onChange={handleInputValueHora}/>
-            <input type="text" placeholder='Actividad' value={actividad} name="actividad"onChange={handleInputValueAct}/>
+            <input type="text" placeholder='Actividad' value={actividad} name="actividad" onChange={handleInputValueAct}/>
             <a className="info" onClick={() => setInfo(!info)} name='info' href='#'>Info.</a>
             <button>
             <MdAddCircle className='add-icon' type="submit"/>

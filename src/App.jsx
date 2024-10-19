@@ -3,25 +3,65 @@ import './App.css'
 import TaskItem from './components/TaskItem';
 import { FormCreate } from './components/notaCreadora';
 import { EditNotas } from './components/EditNotas';
-import { MdHelpOutline } from "react-icons/md";
+import { MdHelpOutline, MdDarkMode, MdLightMode } from "react-icons/md";
 
 function App() {
+
 const [notas, setNotas] = useState([])
 const [contNotas, setContNotas] = useState(0)
+const [darkMode, setDarkMode] = useState(false)
+const [ord, setOrd] = useState(false)
 
 useEffect (() => {
     if (!notas) return
     const notasAux = [...notas]
     notasAux.sort((a, b) => a.hora.localeCompare(b.hora))
     setNotas(notasAux)
+    
+}, [contNotas, ord])
 
-}, [contNotas])
+const getData = () => {
+  return localStorage.getItem('notas')
+}
+
+useEffect(() => {
+  // Carga la lista de notas
+  if (localStorage.getItem('notas')) {
+    setNotas(ordenar(JSON.parse(getData())))}
+  
+  // Verifica si el modo oscuro está activado en el almacenamiento local
+  if (localStorage.getItem('darkMode')) {
+    darkModeFunc()}
+    
+}, [])
+
+function darkModeFunc() {
+
+const body = document.body;
+const darkModeAux = !darkMode
+
+  if (darkModeAux){
+  body.classList.add('dark-mode');
+  localStorage.setItem('darkMode', true);
+  } else {
+    body.classList.remove('dark-mode');
+    localStorage.removeItem('darkMode');
+  }
+  setDarkMode(darkModeAux)
+
+}
+
+function ordenar (notasLocalStorage){
+    notasLocalStorage.sort((a, b) => a.hora.localeCompare(b.hora))
+    return (notasLocalStorage)
+}
 
 function addNota ([hora, actividad, descripcion]) {
   
   const diaActual = new Date()
   let horaActual = diaActual.getHours()
   let minActual = diaActual.getMinutes()
+  let secActual = diaActual.getSeconds()
 
   if(horaActual < 10){
     horaActual = '0'+diaActual.getHours()
@@ -29,76 +69,93 @@ function addNota ([hora, actividad, descripcion]) {
   if(minActual < 10){
     minActual = '0'+diaActual.getMinutes()
   }
+  if(secActual < 10){
+    secActual = '0'+diaActual.getSeconds()
+  }
 
-  let relojActual = horaActual+':'+minActual
-  console.log(relojActual)
+  let relojActual = horaActual+':'+minActual+':'+secActual
   
   let programmedAux = false
   if(hora>relojActual){
     programmedAux = true
   }
 
-  const newTask = {id: (notas.length+1), hora, actividad, descripcion, isEditing: false, info: false, checked: false, programmed: programmedAux}
-  //console.log(newTask)
-  setNotas([...notas, newTask])
-  setContNotas(contNotas+1)
+  const ultimaNota = notas[notas.length-1]
+  const idAux = (ultimaNota === undefined) ? contNotas : ultimaNota.id >= contNotas ? ultimaNota.id+1 : (contNotas+1)
+
+  const newTask = {id: idAux, hora, actividad, descripcion, isEditing: false, info: false, checked: false, programmed: programmedAux}
+  const notasAux = [...notas, newTask]
+  
+  setNotas(notasAux)
+  setContNotas(idAux)
+
+  localStorage.setItem('notas', JSON.stringify(notasAux))
 }
 
 function deleteNota(deleteId){
-  setNotas(notas.filter(nota=> nota.id !== deleteId))
+  const notasAux = notas.filter(nota=> nota.id !== deleteId)
+  setNotas(notasAux)
+  localStorage.setItem('notas', JSON.stringify(notasAux))
 }
 
 function deleteAll(){
   setNotas([])
+  localStorage.removeItem('notas')
 }
 
+
 function toggleCheck (idAux, checkedAux) {
-  setNotas((prevToDoList)=>
-      prevToDoList.map(nota => nota.id===idAux ? {
-          ...nota,
-          checked: checkedAux
-      }: nota),
-  )
+  const notasAux = notas.map(nota => nota.id===idAux ? {
+    ...nota,
+    checked: checkedAux
+  }: nota)
+
+  setNotas(notasAux)
+  localStorage.setItem('notas', JSON.stringify(notasAux))
 }
 
 function editNotaCheck (idAux, infoBool) {
-  setNotas((prevToDoList)=>
-      prevToDoList.map(nota => nota.id===idAux ? {
-          ...nota,
-          info: infoBool,
-          isEditing: !nota.isEditing
-      }: nota),
-  )
+  const notasAux = notas.map(nota => nota.id===idAux ? {
+    ...nota,
+    info: infoBool,
+    isEditing: !nota.isEditing
+}: nota)
+  setNotas(notasAux)
+  localStorage.setItem('notas', JSON.stringify(notasAux))
 }
 
-function editNota ([id, hora, actividad, descripcion]) {
-  setNotas((prevToDoList)=>
-      prevToDoList.map(nota => nota.id===id ? {
-          ...nota,
-          hora,
-          actividad,
-          descripcion
-      }: nota),
-  )
-  console.log(notas)
+function editNota ([id, hora, actividad, descripcion, infoBool]) {
+  const notasAux = notas.map(nota => nota.id===id ? {
+        ...nota,
+        hora,
+        actividad,
+        descripcion,
+        info: infoBool,
+        isEditing: !nota.isEditing
+    }: nota)
+  setNotas(notasAux)
+  setOrd(!ord)
+  localStorage.setItem('notas', JSON.stringify(notasAux))
 }
 
   return (
     <>
+    <header>
+        <div className="toggle">
+          <button className="iconToggle" onClick={darkModeFunc}>{darkMode ? <MdLightMode className='light-icon'/> : <MdDarkMode className='dark-icon'/>}</button>
+        </div>
+    </header>
     <main>
       <h1>Registro</h1>
       <section className='container'>
-          
-                      
-            {notas.map((nota) => (
+                  
+            {notas.length !== 0 ? (notas.map((nota) => (
                 nota.isEditing ? (
-                  <EditNotas nota={nota} editNota={editNota} editNotaCheck={editNotaCheck} />
+                  <EditNotas key={nota.id} nota={nota} editNota={editNota} />
                 ) : (
-                <TaskItem nota={nota} deleteNota={deleteNota} toggleCheck={toggleCheck} editNotaCheck={editNotaCheck}/>
-              )))}
+                <TaskItem key={nota.id} nota={nota} deleteNota={deleteNota} toggleCheck={toggleCheck} editNotaCheck={editNotaCheck}/>
+              )))): (<p className="notify">No tasks to do</p>)}
             
-            {notas.length === 0 ? (<p className="notify">No tasks to do</p>) : null}
-          
           {/*<Stats toDoList={notas}/>*/}
           <div className='nota creadora'>
             <FormCreate addNota={addNota}/>
@@ -106,6 +163,7 @@ function editNota ([id, hora, actividad, descripcion]) {
           <button className='deleteAll' onClick={() => {deleteAll()}}>Reset</button>
       </section>
     </main>
+    
     <a href="#modal-container" className="modal-trigger"><MdHelpOutline className='help-icon'/></a>
 
     <div className="modal-container" id="modal-container">
