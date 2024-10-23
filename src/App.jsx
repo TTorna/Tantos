@@ -27,7 +27,9 @@ const getData = () => {
 useEffect(() => {
   // Carga la lista de notas
   if (localStorage.getItem('notas')) {
-    setNotas(ordenar(JSON.parse(getData())))}
+    const notasLS = (JSON.parse(getData())).sort((a, b) => a.hora.localeCompare(b.hora))
+    setNotas(notasLS)
+  }
   
   // Verifica si el modo oscuro está activado en el almacenamiento local
   if (localStorage.getItem('darkMode')) {
@@ -49,11 +51,9 @@ const darkModeAux = !darkMode
   }
   setDarkMode(darkModeAux)
 
-}
+  console.log(notas)
+  console.log(localStorage.getItem('notas'))
 
-function ordenar (notasLocalStorage){
-    notasLocalStorage.sort((a, b) => a.hora.localeCompare(b.hora))
-    return (notasLocalStorage)
 }
 
 function addNota ([hora, actividad, descripcion]) {
@@ -80,7 +80,10 @@ function addNota ([hora, actividad, descripcion]) {
     programmedAux = true
   }
 
-  const ultimaNota = notas[notas.length-1]
+  //ordenar por id NOTAS
+
+  const notasOrdXId = notas.sort((a, b) => a.id - b.id)
+  const ultimaNota = notasOrdXId[notas.length-1]
   const idAux = (ultimaNota === undefined) ? contNotas : ultimaNota.id >= contNotas ? ultimaNota.id+1 : (contNotas+1)
 
   const newTask = {id: idAux, hora, actividad, descripcion, isEditing: false, info: false, checked: false, programmed: programmedAux}
