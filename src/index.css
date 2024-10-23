@@ -9,6 +9,11 @@
   --modal-bg: #3F3BE1;
 }
 
+#root {
+  width: 100%;
+  height: 100%;
+}
+
 .dark-mode {
   --background-color: #141414;
   --bg-nota-text: #150024;
