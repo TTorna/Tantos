@@ -4,6 +4,8 @@ import TaskItem from './components/TaskItem';
 import { FormCreate } from './components/notaCreadora';
 import { EditNotas } from './components/EditNotas';
 import { MdHelpOutline, MdDarkMode, MdLightMode } from "react-icons/md";
+import { TiChevronRight, TiChevronLeft } from "react-icons/ti";
+
 
 function App() {
 
@@ -11,6 +13,7 @@ const [notas, setNotas] = useState([])
 const [contNotas, setContNotas] = useState(0)
 const [darkMode, setDarkMode] = useState(false)
 const [ord, setOrd] = useState(false)
+const [hoja, setHoja] = useState(1)
 
 useEffect (() => {
     if (!notas) return
@@ -20,17 +23,36 @@ useEffect (() => {
     
 }, [contNotas, ord])
 
-const getData = () => {
-  return localStorage.getItem('notas')
+useEffect (() => {
+  const hojaActual = parseInt(localStorage.getItem('hojaAcual'))
+
+  if (localStorage.getItem('notas'+ hoja)) {
+    const notasLS = (JSON.parse(getData(hoja))).sort((a, b) => a.hora.localeCompare(b.hora))
+    setNotas(notasLS)
+  } else {
+    setNotas([])
+  }
+
+  localStorage.setItem('hojaAcual', hojaActual)
+}, [hoja])
+
+const getData = (hoja) => {
+  return localStorage.getItem('notas'+ hoja)
 }
 
 useEffect(() => {
-  // Carga la lista de notas
-  if (localStorage.getItem('notas')) {
-    const notasLS = (JSON.parse(getData())).sort((a, b) => a.hora.localeCompare(b.hora))
+  const hojaActual = parseInt(localStorage.getItem('hojaAcual'))
+
+  // Verifica la hoja actual
+  if (localStorage.getItem('hojaAcual')) {
+    setHoja(hojaActual)}
+  
+  // Carga la lista de notas1
+  if (localStorage.getItem('notas'+ hojaActual)) {
+    const notasLS = (JSON.parse(localStorage.getItem('notas'+ hoja))).sort((a, b) => a.hora.localeCompare(b.hora))
     setNotas(notasLS)
   }
-  
+
   // Verifica si el modo oscuro está activado en el almacenamiento local
   if (localStorage.getItem('darkMode')) {
     darkModeFunc()}
@@ -52,7 +74,8 @@ const darkModeAux = !darkMode
   setDarkMode(darkModeAux)
 
   console.log(notas)
-  console.log(localStorage.getItem('notas'))
+  console.log(localStorage.getItem('notas'+hoja))
+  console.log(hoja)
 
 }
 
@@ -81,7 +104,6 @@ function addNota ([hora, actividad, descripcion]) {
   }
 
   //ordenar por id NOTAS
-
   const notasOrdXId = notas.sort((a, b) => a.id - b.id)
   const ultimaNota = notasOrdXId[notas.length-1]
   const idAux = (ultimaNota === undefined) ? contNotas : ultimaNota.id >= contNotas ? ultimaNota.id+1 : (contNotas+1)
@@ -92,18 +114,19 @@ function addNota ([hora, actividad, descripcion]) {
   setNotas(notasAux)
   setContNotas(idAux)
 
-  localStorage.setItem('notas', JSON.stringify(notasAux))
+  //hoja === 1 ? localStorage.setItem('notas1', JSON.stringify(notasAux)) : localStorage.setItem('notas2', JSON.stringify(notasAux))
+  localStorage.setItem('notas' + hoja, JSON.stringify(notasAux))
 }
 
 function deleteNota(deleteId){
   const notasAux = notas.filter(nota=> nota.id !== deleteId)
   setNotas(notasAux)
-  localStorage.setItem('notas', JSON.stringify(notasAux))
+  localStorage.setItem('notas'+ hoja, JSON.stringify(notasAux))
 }
 
 function deleteAll(){
   setNotas([])
-  localStorage.removeItem('notas')
+  localStorage.removeItem('notas' + hoja)
 }
 
 
@@ -114,7 +137,7 @@ function toggleCheck (idAux, checkedAux) {
   }: nota)
 
   setNotas(notasAux)
-  localStorage.setItem('notas', JSON.stringify(notasAux))
+  localStorage.setItem('notas' + hoja, JSON.stringify(notasAux))
 }
 
 function editNotaCheck (idAux, infoBool) {
@@ -124,7 +147,7 @@ function editNotaCheck (idAux, infoBool) {
     isEditing: !nota.isEditing
 }: nota)
   setNotas(notasAux)
-  localStorage.setItem('notas', JSON.stringify(notasAux))
+  localStorage.setItem('notas'+hoja, JSON.stringify(notasAux))
 }
 
 function editNota ([id, hora, actividad, descripcion, infoBool]) {
@@ -138,7 +161,13 @@ function editNota ([id, hora, actividad, descripcion, infoBool]) {
     }: nota)
   setNotas(notasAux)
   setOrd(!ord)
-  localStorage.setItem('notas', JSON.stringify(notasAux))
+  localStorage.setItem('notas'+hoja, JSON.stringify(notasAux))
+}
+
+function contadorHojas (n) {
+  const hojasAux = parseInt(hoja) + n
+  setHoja(hojasAux)
+  localStorage.setItem('hojaAcual', hojasAux)
 }
 
   return (
@@ -163,7 +192,11 @@ function editNota ([id, hora, actividad, descripcion, infoBool]) {
           <div className='nota creadora'>
             <FormCreate addNota={addNota}/>
           </div>
+          <div className='buttom-bottoms'>
+          <button className={hoja === 1 ? 'izqNota disabled' : 'izqNota'} onClick={() => {parseInt(hoja) - 1 > 0 && contadorHojas(-1)}}><TiChevronLeft /></button>
           <button className='deleteAll' onClick={() => {deleteAll()}}>Reset</button>
+          <button className={hoja === 2 ? 'derNota disabled' : 'derNota'} onClick={() => {parseInt(hoja) + 1 <= 2 && contadorHojas(1)}}><TiChevronRight /></button>
+          </div>
       </section>
     </main>
     
