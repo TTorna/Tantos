@@ -41,10 +41,11 @@ const getData = (hoja) => {
 }
 
 useEffect(() => {
-  const hojaActual = parseInt(localStorage.getItem('hojaAcual'))
+  let hojaActual = 1
 
   // Verifica la hoja actual
   if (localStorage.getItem('hojaAcual')) {
+    hojaActual = parseInt(localStorage.getItem('hojaAcual'))
     setHoja(hojaActual)}
   
   // Carga la lista de notas1
