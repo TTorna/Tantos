@@ -44,7 +44,7 @@ useEffect(() => {
   let hojaActual = 1
 
   // Verifica la hoja actual
-  if (localStorage.getItem('hojaAcual')) {
+  if (!isNaN(localStorage.getItem('hojaAcual'))) {
     hojaActual = parseInt(localStorage.getItem('hojaAcual'))
     setHoja(hojaActual)}
   
